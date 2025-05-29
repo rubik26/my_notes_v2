@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/datasources/local/notes_local_datasource.dart';
 import '../../domain/entities/note.dart';
@@ -53,7 +55,13 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
     required this.deleteNote,
     required this.getNotes,
     required this.updateNote,
-  }) : super(NoteInitial()) {
+  }) : super(
+          NotesLocalDatasourceImpl().getNotes().isEmpty
+              ? NoteInitial()
+              : NoteLoaded(
+                  NotesLocalDatasourceImpl().getNotes(),
+                ),
+        ) {
     on<FetchNotes>(_onFetchNotes);
     on<AddNoteEvent>(_onAddNote);
     on<DeleteNoteEvent>(_onDeleteNote);
